@@ -48,7 +48,6 @@ public class HomeControllerTest {
             assertEquals("Adventure Awaits", homeController.observableMovieList.get(0).getTitle(), "First movie should be 'Adventure Awaits' when ordered ascending.");
         });
     }
-
     // Tests if movies are ordered in descending order correctly.
     @Test
     public void whenOrderedDesc_thenFirstMovieIsComedyNight() {
