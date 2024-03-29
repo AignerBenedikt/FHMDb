@@ -23,8 +23,8 @@ public class MovieCell extends ListCell<Movie> {
 
         if (empty || movie == null) {
             setText(null);
+            setGraphic(null);
         } else {
-            this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
             detail.setText(
                     movie.getDescription() != null
@@ -32,11 +32,9 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
 
-            genreLabel.setText(
-                    movie.getGenres() != null && !movie.getGenres().isEmpty()
-                            ? String.join(", ", movie.getGenres())
-                            : "No genres available"
-            );
+            genreLabel.setText("Genre: ");
+            genre.setText(movie.getGenres() != null && !movie.getGenres().isEmpty() ? String.join(",", movie.getGenres()) : "No genres available");
+            genre.setStyle("-fx-text-fill: white;");
 
             // color scheme
             title.getStyleClass().add("text-yellow");

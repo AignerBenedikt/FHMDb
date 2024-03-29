@@ -1,4 +1,3 @@
-package at.ac.fhcampuswien.fhmdb;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
@@ -10,12 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXButton;
-import javafx.collections.ObservableList;
 
-//import java.util.Arrays;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +48,6 @@ public class HomeControllerTest {
             assertEquals("Adventure Awaits", homeController.observableMovieList.get(0).getTitle(), "First movie should be 'Adventure Awaits' when ordered ascending.");
         });
     }
-
     // Tests if movies are ordered in descending order correctly.
     @Test
     public void whenOrderedDesc_thenFirstMovieIsComedyNight() {
@@ -122,6 +116,5 @@ public class HomeControllerTest {
             }
 
 
-        }
     }
 }
