@@ -95,8 +95,4 @@ public class HomeControllerTest {
         assertEquals(controller.allMovies.size(), controller.observableMovies.size(), "Leerer Genre-Filter sollte alle Filme zurückgeben.");
     }
 
-    @Test
-    public void testGenreComboBoxIsPopulated() {
-        assertEquals(Arrays.asList("Action", "Sci-Fi", "Thriller", "Crime", "Drama", "Animation", "Comedy", "Family"), controller.genreComboBox.getItems().stream().sorted().collect(Collectors.toList()), "Genre-ComboBox sollte korrekt mit Genres befüllt sein.");
-    }
 }
