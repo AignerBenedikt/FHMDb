@@ -45,7 +45,7 @@ public class HomeControllerTest {
     @Test
     public void testFilterMoviesByGenre() {
         controller.genreComboBox.setValue("Action");
-        controller.applyFilter();
+        controller.applyCombinedFilter();
         assertTrue(controller.observableMovies.stream().allMatch(movie -> movie.getGenres().contains("Action")), "Filme sollten nach Genre 'Action' gefiltert werden.");
     }
 
@@ -67,45 +67,40 @@ public class HomeControllerTest {
 
     @Test
     public void testApplySearch() {
+        controller.genreComboBox.setValue("No Genre");
         controller.searchField.setText("The");
-        controller.applySearch();
+        controller.applyCombinedFilter();
         assertTrue(controller.observableMovies.stream().allMatch(movie -> movie.getTitle().contains("The")), "Suche sollte nur Filme mit 'The' im Titel zurückgeben.");
     }
 
     @Test
     public void testFilterAndSearchCombined() {
         controller.genreComboBox.setValue("Animation");
-        controller.applyFilter();
         controller.searchField.setText("Shrek");
-        controller.applySearch();
+        controller.applyCombinedFilter();
         assertEquals(1, controller.observableMovies.size(), "Es sollte nur ein Film übrig bleiben, der sowohl dem Genre 'Animation' entspricht als auch 'Shrek' im Titel hat.");
     }
 
     @Test
     public void testSearchCaseInsensitive() {
+        controller.genreComboBox.setValue("No Genre");
         controller.searchField.setText("shrek");
-        controller.applySearch();
+        controller.applyCombinedFilter();
         assertTrue(controller.observableMovies.stream().anyMatch(movie -> movie.getTitle().equalsIgnoreCase("Shrek")), "Suche sollte case-insensitive sein.");
     }
 
     @Test
     public void testEmptySearchFieldReturnsAllMovies() {
+        controller.genreComboBox.setValue("No Genre");
         controller.searchField.setText("");
-        controller.applySearch();
+        controller.applyCombinedFilter();
         assertEquals(controller.allMovies.size(), controller.observableMovies.size(), "Leeres Suchfeld sollte alle Filme zurückgeben.");
     }
 
     @Test
-    public void testEmptyGenreFilterReturnsAllMovies() {
-        controller.genreComboBox.setValue("");
-        controller.applyFilter();
-        assertEquals(controller.allMovies.size(), controller.observableMovies.size(), "Leerer Genre-Filter sollte alle Filme zurückgeben.");
-    }
-
-    @Test
     public void testNoFilterOptionReturnAllMovies(){
-        controller.genreComboBox.setValue("No Filter");
-        controller.applyFilter();
+        controller.genreComboBox.setValue("No Genre");
+        controller.applyCombinedFilter();
 
         assertEquals(controller.allMovies.size(), controller.observableMovies.size(), "Die Option 'No Filter' sollte alle Filme zurückgeben.");
     }

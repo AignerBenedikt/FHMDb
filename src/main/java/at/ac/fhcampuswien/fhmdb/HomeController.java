@@ -45,32 +45,30 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         observableMovies.setAll(allMovies);         // add dummy data to observable list
+        observableMovies.sort(Comparator.comparing(Movie::getTitle));
+        sortBtn.setText("Sort (desc)");
 
         // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
 
-        genreComboBox.getItems().add("No Filter");
+        genreComboBox.getItems().add("No Genre");
         List<String> genres = allMovies.stream().flatMap(movie -> movie.getGenres().stream()).distinct().collect(Collectors.toList());
         genreComboBox.getItems().addAll(genres);
-        genreComboBox.setValue("No Filter");
+        genreComboBox.setValue("No Genre");
 
         sortBtn.setOnAction(actionEvent -> toggleSort());
-
-        filterBtn.setOnAction(actionEvent -> applyFilter());
-
-        searchBtn.setOnAction(actionEvent -> applySearch());
+        filterBtn.setOnAction(actionEvent -> applyCombinedFilter());
 
         searchField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
-                applySearch();
+                applyCombinedFilter();
             }
         });
-
     }
 
     void toggleSort() {
-        if (sortBtn.getText().equals("Sort (asc)")) {
+        if ("Sort (asc)".equals(sortBtn.getText())) {
             observableMovies.sort(Comparator.comparing(Movie::getTitle));
             sortBtn.setText("Sort (desc)");
         } else {
@@ -79,34 +77,26 @@ public class HomeController implements Initializable {
         }
     }
 
-    void applyFilter() {
-        String selectedGenre = genreComboBox.getValue();
-        if ("No Filter".equals(selectedGenre)){
-            observableMovies.setAll(allMovies);
-        } else {
-            List<Movie> filteredMovies = allMovies.stream().filter(movie -> movie.getGenres().contains(selectedGenre)).collect(Collectors.toList());
-            observableMovies.setAll(filteredMovies);
-        }
-    }
+    void applyCombinedFilter(){
+        String searchText = searchField.getText().trim().toLowerCase();
+        String selectedGenre = genreComboBox.getValue().equals("No Genre") ? null : genreComboBox.getValue();
 
-    void applySearch() {
-        String searchText = searchField.getText();
-        //genreComboBox.getSelectionModel().clearSelection();
-        filterMovies(null, searchText);
+        Stream<Movie> filteredStream = allMovies.stream().filter(movie -> selectedGenre == null || movie.getGenres().contains(selectedGenre))
+                .filter(movie -> selectedGenre == null || movie.getGenres().contains(selectedGenre))
+                .filter(movie -> searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText));
+        List<Movie> filteredMovies = filteredStream.collect(Collectors.toList());
+        observableMovies.setAll(filteredMovies);
     }
 
     private void filterMovies(String genre, String searchText) {
-        Stream<Movie> filteredStream = allMovies.stream();
+        Stream<Movie> filteredStream = allMovies.stream().filter(movie -> genre == null || movie.getGenres().contains(genre));
 
-        if (genre != null && !genre.isEmpty()) {
-            filteredStream = filteredStream.filter(movie -> movie.getGenres().contains(genre));
-        }
-        if (searchText != null && !searchText.trim().isEmpty()) {
-            String lowerCaseSearchText = searchText.toLowerCase();
-            filteredStream = filteredStream.filter(movie -> movie.getTitle().toLowerCase().contains(lowerCaseSearchText));
+        if (searchText != null && !searchText.isEmpty()) {
+            filteredStream = filteredStream.filter(movie -> movie.getTitle().toLowerCase().contains(searchText.toLowerCase()));
         }
 
         List<Movie> filteredMovies = filteredStream.collect(Collectors.toList());
         observableMovies.setAll(filteredMovies);
+        movieListView.setItems(observableMovies);
     }
 }
