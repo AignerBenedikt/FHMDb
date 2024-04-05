@@ -50,9 +50,10 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
 
+        genreComboBox.getItems().add("No Filter");
         List<String> genres = allMovies.stream().flatMap(movie -> movie.getGenres().stream()).distinct().collect(Collectors.toList());
         genreComboBox.getItems().addAll(genres);
-        genreComboBox.setPromptText("Filter by Genre");
+        genreComboBox.setValue("No Filter");
 
         sortBtn.setOnAction(actionEvent -> toggleSort());
 
@@ -80,8 +81,12 @@ public class HomeController implements Initializable {
 
     void applyFilter() {
         String selectedGenre = genreComboBox.getValue();
-        //searchField.clear();
-        filterMovies(selectedGenre, null);
+        if ("No Filter".equals(selectedGenre)){
+            observableMovies.setAll(allMovies);
+        } else {
+            List<Movie> filteredMovies = allMovies.stream().filter(movie -> movie.getGenres().contains(selectedGenre)).collect(Collectors.toList());
+            observableMovies.setAll(filteredMovies);
+        }
     }
 
     void applySearch() {

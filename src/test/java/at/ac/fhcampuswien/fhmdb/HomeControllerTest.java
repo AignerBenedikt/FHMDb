@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TextField;
+import javafx.application.Platform;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
@@ -16,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HomeControllerTest {
 
     private HomeController controller;
+
+    @BeforeAll
+    public static void setUpClass() {
+        Platform.startup(() -> {});
+    }
 
     @BeforeEach
     public void setUp() {
@@ -93,6 +100,14 @@ public class HomeControllerTest {
         controller.genreComboBox.setValue("");
         controller.applyFilter();
         assertEquals(controller.allMovies.size(), controller.observableMovies.size(), "Leerer Genre-Filter sollte alle Filme zurückgeben.");
+    }
+
+    @Test
+    public void testNoFilterOptionReturnAllMovies(){
+        controller.genreComboBox.setValue("No Filter");
+        controller.applyFilter();
+
+        assertEquals(controller.allMovies.size(), controller.observableMovies.size(), "Die Option 'No Filter' sollte alle Filme zurückgeben.");
     }
 
 }
